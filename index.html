@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ChatGPT Demo</title>
+</head>
+<body>
+  <label for="input">请输入您的问题或文本：</label>
+  <input type="text" id="input">
+  <button id="submit">提交</button>
+
+  <script>
+    const endpoint = "https://api.openai.com/v1/engines/davinci-codex/completions"; // ChatGPT的API端点
+    const apiKey = "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"; // 替换成你自己的API密钥
+
+    async function generateResponse(text) {
+      const prompt = text.trim(); // 去除用户输入中的空格
+      const requestBody = {
+        prompt,
+        max_tokens: 60,
+        temperature: 0.7,
+        n: 1,
+        stop: "\n",
+      };
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      };
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(requestBody),
+      });
+      const data = await response.json();
+      const completion = data.choices[0].text.trim();
+      return completion;
+    }
+
+    document.getElementById("submit").addEventListener("click", async () => {
+      const userInput = document.getElementById("input").value;
+      const response = await generateResponse(userInput);
+      console.log(response); // 在控制台中输出ChatGPT的响应
+      // 将ChatGPT的响应插入到HTML页面中的某个元素中
+    });
+  </script>
+</body>
+</html>
